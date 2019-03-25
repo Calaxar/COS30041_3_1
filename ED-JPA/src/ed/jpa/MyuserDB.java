@@ -70,4 +70,32 @@ public class MyuserDB {
 		myuser.setSecans(myDTO.getSecAns());
 		return myuser;
 	}
+
+	MyuserDTO getRecord(String userId) {
+		Myuser m = findMyuser(userId);
+		if (m != null) {
+			return new MyuserDTO(m.getUserid(), m.getName(), m.getPassword(),
+			m.getEmail(), m.getPhone(), m.getAddress(),
+			m.getSecqn(), m.getSecans());
+		} else return null;
+	}
+
+	boolean updateRecord(MyuserDTO myuserDTO) {
+		em.getTransaction().begin();
+		em.merge(myDTO2DAO(myuserDTO));
+		boolean success = em.contains(myDTO2DAO(myuserDTO));
+		em.getTransaction().commit();
+		if (success) System.out.println("Record " + myuserDTO.getUserid() + " updated.");
+		return success;
+	}
+
+	boolean deleteRecord(String userId) {
+		Myuser m = findMyuser(userId);
+		em.getTransaction().begin();
+		em.remove(m);
+		boolean success = !em.contains(m);
+		em.getTransaction().commit();
+		return success;
+	}
+
 }
